@@ -29,15 +29,15 @@ class RealNVP(nn.Module):
         self.flows = _RealNVP(0, num_scales, in_channels, mid_channels, num_blocks)
 
     def forward(self, x, reverse=False):
-        sldj = None
-        if not reverse:
-            # Expect inputs in [0, 1]
-            if x.min() < 0 or x.max() > 1:
-                raise ValueError('Expected x in [0, 1], got x with min/max {}/{}'
-                                 .format(x.min(), x.max()))
+        sldj = torch.zeros(len(x), device=x.device)
+        #if not reverse:
+        #    # Expect inputs in [0, 1]
+        #    if x.min() < 0 or x.max() > 1:
+        #        raise ValueError('Expected x in [0, 1], got x with min/max {}/{}'
+        #                         .format(x.min(), x.max()))
 
-            # De-quantize and convert to logits
-            x, sldj = self._pre_process(x)
+        #    # De-quantize and convert to logits
+        #    x, sldj = self._pre_process(x)
 
         x, sldj = self.flows(x, sldj, reverse)
 
